@@ -50,7 +50,7 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    @Column(name = "email_address", nullable = false)
+    @Column(name = "email_address", nullable = false, unique = true)
     public String getEmail() {
         return email;
     }
