@@ -1,33 +1,28 @@
 package com.example.demo.controller;
 
-import java.net.URI;
-import java.util.HashMap;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ResourceConflictException;
+import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.model.Employee;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.exception.ResourceConflictException;
-import com.example.demo.model.Employee;
-import com.example.demo.repository.EmployeeRepository;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-// @CrossOrigin(origins = "http://localhost:4200")
+
+
 @RestController
 @RequestMapping("/api/v1")
 public class EmployeeController {
@@ -35,12 +30,12 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @GetMapping("/employees")
+    @RequestMapping(value = "/employees", method = RequestMethod.GET)
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
 
-    @GetMapping("/employees/{id}")
+    @RequestMapping(value = "/employees/{id}", method = RequestMethod.GET)
     public ResponseEntity<Employee> getEmployeeById(@PathVariable(value = "id") Long employeeId)
             throws ResourceNotFoundException {
         Employee employee = employeeRepository.findById(employeeId)
@@ -48,7 +43,7 @@ public class EmployeeController {
         return ResponseEntity.ok().body(employee);
     }
 
-    @PostMapping("/employees")
+    @RequestMapping(value = "/employees", method = RequestMethod.POST)
     public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) throws ResourceConflictException {
 
         String email = employee.getEmail();
@@ -64,7 +59,7 @@ public class EmployeeController {
         return ResponseEntity.created(location).body(newEmployee);
     }
 
-    @PutMapping("/employees/{id}")
+    @RequestMapping(value = "/employees/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Employee> updateEmployee(@PathVariable(value = "id") Long employeeId,
                                                    @Valid @RequestBody Employee employeeDetails) throws ResourceNotFoundException {
         Employee employee = employeeRepository.findById(employeeId)
@@ -78,7 +73,7 @@ public class EmployeeController {
     }
 
 
-//    @DeleteMapping("/employees/{id}")
+//    @RequestMapping(value = "/employees/{id}", method = RequestMethod.DELETE)
 //    public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") Long employeeId)
 //            throws ResourceNotFoundException {
 //        Employee employee = employeeRepository.findById(employeeId)
@@ -91,7 +86,7 @@ public class EmployeeController {
 //    }
 
 
-    @DeleteMapping("/employees/{id}")
+    @RequestMapping(value = "/employees/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Map> deleteEmployee(@PathVariable(value = "id") Long employeeId) throws ResourceNotFoundException {
 
         Employee employee = employeeRepository.findById(employeeId)
@@ -101,4 +96,5 @@ public class EmployeeController {
         response.put("deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
+
 }
